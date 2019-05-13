@@ -1,10 +1,11 @@
-package com.upgrad.instagramclone;
+package com.upgrad.instagramclone.activity;
 
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.SparseLongArray;
+
+import com.upgrad.instagramclone.R;
 
 public class SplashActivity extends AppCompatActivity {
 
