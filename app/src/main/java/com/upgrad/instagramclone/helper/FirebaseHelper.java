@@ -1,7 +1,9 @@
 package com.upgrad.instagramclone.helper;
 
+import android.content.Context;
 import android.net.Uri;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -10,6 +12,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+
 
 public class FirebaseHelper {
 
@@ -21,7 +24,10 @@ public class FirebaseHelper {
 
     private static StorageReference storageReference, imageReference;
 
-    public static void init() {
+    public static void init(Context context) {
+
+
+        //FirebaseApp.initializeApp(context);
 
         //getInstance
         auth = FirebaseAuth.getInstance();

@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.google.firebase.FirebaseApp;
 import com.upgrad.instagramclone.R;
 
 public class SplashActivity extends AppCompatActivity {

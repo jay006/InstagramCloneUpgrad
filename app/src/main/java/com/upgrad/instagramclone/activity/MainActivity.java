@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseHelper.init();
+        FirebaseHelper.init(getApplicationContext());
 
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
