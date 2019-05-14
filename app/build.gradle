@@ -34,9 +34,14 @@ dependencies {
     //firebase database
     //noinspection GradleDependency
     implementation 'com.google.firebase:firebase-auth:16.0.2'
-    implementation 'com.google.firebase:firebase-database:16.0.1'
-    implementation 'com.google.firebase:firebase-storage:16.0.1'
     implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
+
+    // FirebaseUI for Firebase Realtime Database
+    implementation 'com.firebaseui:firebase-ui-database:4.1.0'
+    implementation 'com.google.firebase:firebase-database:16.0.1'
+
+    implementation 'com.google.firebase:firebase-storage:16.0.1'
+
     implementation 'com.google.firebase:firebase-core:16.0.1'
 
     implementation 'com.fxn769:pix:1.2.1'

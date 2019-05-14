@@ -7,6 +7,8 @@ public class Post {
     private String imageUrl = "";
     private User user = null;
 
+    public Post(){}
+
     public Post(String caption, long uploadTimestamp, String imageUrl, User user) {
         this.caption = caption;
         this.uploadTimestamp = uploadTimestamp;
