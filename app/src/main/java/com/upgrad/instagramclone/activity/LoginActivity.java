@@ -13,6 +13,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.upgrad.instagramclone.R;
+import com.upgrad.instagramclone.helper.FirebaseHelper;
 import com.upgrad.instagramclone.helper.SharedPref;
 
 import java.util.Arrays;
@@ -56,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 SharedPref.getInstance(getApplicationContext()).saveUser(user);
                 //TODO save user in firebaeDatabse
+                FirebaseHelper.saveUser(getApplicationContext());
                 gotoMainActivity();
 
             } else {

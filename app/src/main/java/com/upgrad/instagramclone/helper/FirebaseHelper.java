@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.upgrad.instagramclone.model.User;
 
 import java.io.File;
 
@@ -60,5 +61,14 @@ public class FirebaseHelper {
 
     public static FirebaseAuth getFirebaseAuth() {
         return auth;
+    }
+
+    public static boolean isLoggedIn() {
+        return auth.getCurrentUser() != null;
+    }
+
+    public static void saveUser(Context context) {
+        User user = SharedPref.getInstance(context).getUser();
+        userReference.push().setValue(user);
     }
 }
