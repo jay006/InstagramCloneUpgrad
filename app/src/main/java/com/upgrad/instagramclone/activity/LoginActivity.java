@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         Button loginButton = findViewById(R.id.loginButton);
         TextView welcomeTextView = findViewById(R.id.welcomeTextView);
 
-        loginButton.setTypeface(beautiful_font);
+        //loginButton.setTypeface(beautiful_font);
         welcomeTextView.setTypeface(beautiful_font);
 
         loginButton.setOnClickListener(new View.OnClickListener() {

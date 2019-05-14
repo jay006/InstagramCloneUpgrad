@@ -9,32 +9,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.fxn.pix.Pix;
-import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.upgrad.instagramclone.R;
 import com.upgrad.instagramclone.helper.FirebaseHelper;
@@ -50,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authStateListener;
 
     private RecyclerView recyclerView;
+    private LinearLayout progressContainer;
+
 
     private Typeface beautiful_font, sans_light;
 
@@ -58,7 +55,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseHelper.init(getApplicationContext());
+        progressContainer = findViewById(R.id.progressContainer);
+        progressContainer.setVisibility(View.GONE);
+
+
         if (!FirebaseHelper.isLoggedIn()) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
@@ -91,10 +91,7 @@ public class MainActivity extends AppCompatActivity {
         Query query = FirebaseHelper.getPostRef();
 
 
-        FirebaseRecyclerOptions<Post> options = new FirebaseRecyclerOptions.Builder<Post>()
-                .setQuery(query, Post.class)
-                .setLifecycleOwner(MainActivity.this)
-                .build();
+        FirebaseRecyclerOptions<Post> options = new FirebaseRecyclerOptions.Builder<Post>().setQuery(query, Post.class).setLifecycleOwner(MainActivity.this).build();
 
         FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Post, PostHolder>(options) {
 
@@ -109,26 +106,23 @@ public class MainActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull PostHolder holder, int position, @NonNull Post model) {
 
 
-                Glide.with(getApplicationContext())
-                        .load(model.getUser()
-                        .getUserImage())
-                        .thumbnail(0.1f)
-                        .into(holder.logoView);
+                Glide.with(getApplicationContext()).load(model.getUser().getUserImage()).thumbnail(0.1f).into(holder.logoView);
 
                 holder.userName.setText(model.getUser().getUserName());
-                holder.userName.setTypeface(beautiful_font);
+                holder.userName.setTypeface(sans_light);
 
                 holder.postTime.setText(FirebaseHelper.getTime(model.getUploadTimestamp()));
 
                 Glide.with(getApplicationContext()).load(model.getImageUrl()).thumbnail(0.1f).into(holder.postImageView);
 
-                holder.userCaption.setText(model.getCaption());
+                holder.userCaption.setText("my life my rules. nothings gonna bother me.");
                 holder.userCaption.setTypeface(sans_light);
 
             }
         };
 
         recyclerView.setAdapter(adapter);
+
 
     }
 
@@ -143,26 +137,48 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.action_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_signout:
+                signOut();
+                return true;
+
+            default:
+                return false;
+        }
+
+    }
+
+    private void signOut() {
+
+        AuthUI.getInstance().signOut(MainActivity.this).addOnCompleteListener(new OnCompleteListener<Void>() {
+            public void onComplete(@NonNull Task<Void> task) {
+                showToast("Successfully sign out");
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+            }
+        });
+    }
+
     public void uploadClicked(View view) {
         Pix.start(MainActivity.this, RC_PIX, 1);
     }
 
     private void uploadImage(String imageLocation) {
 
-        showToast("Upload Started");
+        progressContainer.setVisibility(View.VISIBLE);
         final UploadTask uploadTask = FirebaseHelper.setFile(imageLocation);
-        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
-                int percent = (int) ((double) taskSnapshot.getBytesTransferred() / (double) taskSnapshot.getTotalByteCount() * 100);
-                //TODO update the progress dialog from here
-                Log.d("upload_percent", String.valueOf(percent));
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                 //upload completed
                 FirebaseHelper.getImageRef().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
@@ -170,15 +186,15 @@ public class MainActivity extends AppCompatActivity {
                         updateDatabase(uri.toString());
                     }
                 });
-                showToast("UPload complted");
+
+                progressContainer.setVisibility(View.GONE);
 
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                //TODO update app about its failuer
-                showToast("Upload error");
-                Log.d("upload_error", e.getMessage());
+                showToast("Upload error. Try again");
+                progressContainer.setVisibility(View.GONE);
             }
         });
     }

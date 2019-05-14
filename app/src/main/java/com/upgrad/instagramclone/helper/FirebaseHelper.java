@@ -85,18 +85,18 @@ public class FirebaseHelper {
                     int days = (int) hours / 24;
                     if (days > 364) {
                         int year = days / 365;
-                        return "asked " + String.valueOf(year) + " years ago";
+                        return String.valueOf(year) + " years ";
                     } else {
-                        return "asked " + String.valueOf(days) + " days ago";
+                        return String.valueOf(days) + " days ago";
                     }
                 } else {
-                    return "asked " + String.valueOf(hours) + " hours ago";
+                    return String.valueOf(hours) + " hours ago";
                 }
             } else {
-                return "asked " + String.valueOf(minutes) + " mins ago";
+                return String.valueOf(minutes) + " mins ago";
             }
         } else {
-            return "asked " + String.valueOf(seconds) + " seconds ago";
+            return String.valueOf(seconds) + " seconds ago";
         }
     }
 }

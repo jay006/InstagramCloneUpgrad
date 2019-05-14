@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.FirebaseApp;
 import com.upgrad.instagramclone.R;
+import com.upgrad.instagramclone.helper.FirebaseHelper;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -18,15 +19,15 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        FirebaseHelper.init(getApplicationContext());
+
         ImageView imageView = findViewById(R.id.logoImageView);
-        Glide.with(this)
-                .load(R.drawable.instagram_log)
-                .into(imageView);
+        Glide.with(this).load(R.drawable.instagram_log).into(imageView);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent  = new Intent(SplashActivity.this, MainActivity.class);
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
