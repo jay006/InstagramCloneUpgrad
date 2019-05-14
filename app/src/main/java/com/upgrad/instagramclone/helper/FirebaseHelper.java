@@ -13,6 +13,7 @@ import com.google.firebase.storage.UploadTask;
 import com.upgrad.instagramclone.model.User;
 
 import java.io.File;
+import java.util.Date;
 
 
 public class FirebaseHelper {
@@ -70,5 +71,32 @@ public class FirebaseHelper {
     public static void saveUser(Context context) {
         User user = SharedPref.getInstance(context).getUser();
         userReference.push().setValue(user);
+    }
+
+    public static String getTime(long seconds) {
+        long timeMilli = new Date().getTime();
+        long currentSecond = timeMilli/1000;
+        seconds = currentSecond - seconds;
+        if (seconds > 59) {
+            long minutes = seconds / 60;
+            if (minutes > 59) {
+                long hours = minutes / 60;
+                if (hours > 23) {
+                    int days = (int) hours / 24;
+                    if (days > 364) {
+                        int year = days / 365;
+                        return "asked " + String.valueOf(year) + " years ago";
+                    } else {
+                        return "asked " + String.valueOf(days) + " days ago";
+                    }
+                } else {
+                    return "asked " + String.valueOf(hours) + " hours ago";
+                }
+            } else {
+                return "asked " + String.valueOf(minutes) + " mins ago";
+            }
+        } else {
+            return "asked " + String.valueOf(seconds) + " seconds ago";
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.upgrad.instagramclone.activity;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
 
+    private Typeface beautiful_font, sans_light;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
+        beautiful_font = Typeface.createFromAsset(getAssets(), "beautiful_people.ttf");
+        sans_light = Typeface.createFromAsset(getAssets(), "sans_light.ttf");
 
         setPostUpdateListener();
 
@@ -101,7 +107,24 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull PostHolder holder, int position, @NonNull Post model) {
+
+
+                Glide.with(getApplicationContext())
+                        .load(model.getUser()
+                        .getUserImage())
+                        .thumbnail(0.1f)
+                        .into(holder.logoView);
+
+                holder.userName.setText(model.getUser().getUserName());
+                holder.userName.setTypeface(beautiful_font);
+
+                holder.postTime.setText(FirebaseHelper.getTime(model.getUploadTimestamp()));
+
                 Glide.with(getApplicationContext()).load(model.getImageUrl()).thumbnail(0.1f).into(holder.postImageView);
+
+                holder.userCaption.setText(model.getCaption());
+                holder.userCaption.setTypeface(sans_light);
+
             }
         };
 

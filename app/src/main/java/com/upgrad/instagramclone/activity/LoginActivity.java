@@ -1,11 +1,14 @@
 package com.upgrad.instagramclone.activity;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -23,8 +26,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 100;
     // Choose authentication providers
-    List<AuthUI.IdpConfig> providers = Arrays.asList(
-            new AuthUI.IdpConfig.GoogleBuilder().build());
+    List<AuthUI.IdpConfig> providers = Arrays.asList(new AuthUI.IdpConfig.GoogleBuilder().build());
 
 
     @Override
@@ -32,18 +34,28 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Typeface beautiful_font = Typeface.createFromAsset(getAssets(), "beautiful_people.ttf");
 
-    }
+        Button loginButton = findViewById(R.id.loginButton);
+        TextView welcomeTextView = findViewById(R.id.welcomeTextView);
 
-    public void login(View view) {
-        // Create and launch sign-in intent
-        startActivityForResult(
-                AuthUI.getInstance()
+        loginButton.setTypeface(beautiful_font);
+        welcomeTextView.setTypeface(beautiful_font);
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create and launch sign-in intent
+                startActivityForResult(AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
-                        .build(),
-                RC_SIGN_IN);
+                        .build(), RC_SIGN_IN);
+
+            }
+        });
+
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -79,6 +91,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT ).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
